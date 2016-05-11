@@ -1,0 +1,3 @@
+:name "parse_trans"
+:node-sname "parse_trans"
+:lib-dirs '("_build/test/lib" "_build/default/lib")
