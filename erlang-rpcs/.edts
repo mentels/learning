@@ -1,0 +1,3 @@
+:name "erpc"
+:node-sname "erpc_edts"
+:lib-dirs '("_build/test/lib" "_build/default/lib")
