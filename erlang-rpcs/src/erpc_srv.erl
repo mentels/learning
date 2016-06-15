@@ -10,7 +10,8 @@
 %% API
 -export([start_link/0,
          timing_out_call/0,
-         supervised_timing_out_call/0]).
+         supervised_timing_out_call/0,
+         regular_call/1]).
 
 -export([init/1,
          handle_call/3,
@@ -34,6 +35,9 @@ timing_out_call() ->
 supervised_timing_out_call() ->
     erpc_task_sup:add_task(fun() -> ?MODULE:timing_out_call() end).
 
+regular_call(Data) ->
+    gen_server:call(?SERVER, {regular_call, Data}).
+
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
@@ -44,9 +48,10 @@ init([]) ->
 
 handle_call({timing_out_call, Caller}, _From, _State) ->
     link(Caller),
-    lager:info("~p ~p: processing request from caller: ~p", [?MODULE,
-                                                             self(),
-                                                             Caller]),
+    lager:info("~p ~p: processing request from caller: ~p "
+               "whose error_handler is ~p",
+               [?MODULE, self(), Caller, erlang:process_info(Caller,
+                                                             error_handler)]),
     timer:sleep(timer:seconds(10)),
     lager:info("~p ~p: request processed the caller is ~s",
                [?MODULE, self(), case is_process_alive(Caller) of
@@ -54,6 +59,10 @@ handle_call({timing_out_call, Caller}, _From, _State) ->
                                      false -> "dead"
                                  end]),
     {reply, ok, Caller};
+handle_call({regular_call, Data}, _From, State) ->
+    lager:info("~p ~p: got ~p MB of data",
+               [?MODULE, self(), (byte_size(Data)/(1000*1000))]),
+    {reply, ok, State};
 handle_call(_Req, _From, State) ->
     {reply, ok, State}.
 
