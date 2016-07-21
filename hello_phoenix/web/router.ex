@@ -17,6 +17,10 @@ defmodule HelloPhoenix.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    # It will look for HelloPhoenix.HelloController module and invoke
+    # the index action which is a functin index/2
+    get "/hello", HelloController, :index
+    get "/hello/:messenger", HelloController, :show
   end
 
   # Other scopes may use custom stacks.
