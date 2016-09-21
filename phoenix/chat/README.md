@@ -18,3 +18,11 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+  * Channels guide: http://www.phoenixframework.org/docs/channels
+  * Phoenix chat example: https://github.com/chrismccord/phoenix_chat_example
+
+
+## TODO
+
+* [ ] Implement join a channel with a provided user name
+* [ ] Implement users authorization
