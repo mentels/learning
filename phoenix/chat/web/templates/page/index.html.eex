@@ -1,2 +1,5 @@
 <div id="messages"></div>
-<input id="chat-input" type="text"></input>
+<p>User: <input id="username-input" type="text" name="user"></input></p>
+<p>Message: <input id="chat-input" type="text" name="message"></input></p>
+
+
