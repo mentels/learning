@@ -1,0 +1,2 @@
+defmodule ElixirMixLib do
+end
