@@ -1,0 +1,2 @@
+I came from assings: <%= @message %>
+This is the messsage: <%= message %>
