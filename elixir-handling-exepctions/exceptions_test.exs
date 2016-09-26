@@ -11,7 +11,7 @@ defmodule HandlingExceptionsTests do
     assert_raise CustomException, fn -> raise(CustomException) end
   end
 
-  test "Try/rescue allows to catch an exception" do
+  test "Try/rescue allows to rescue a raised exception" do
     ex = try do
            raise "haha"
          rescue
@@ -20,13 +20,61 @@ defmodule HandlingExceptionsTests do
     assert %RuntimeError{message: "haha"} == ex
   end
 
-  test "Try/rescue allows to pattern match on exception type/class" do
+  test "Try/catch allows to catch a raised exception" do
+    ex = try do
+           raise "haha"
+         catch
+           :error, reason -> reason
+         end
+    assert %RuntimeError{message: "haha"} == ex
+  end
+
+  test "Try/catch allows to rescue an errored, predefined elixir
+  exception" do
+    ex = try do
+           :erlang.error(:badarg)
+         rescue
+           e in ArgumentError ->
+             e
+         end
+    assert %ArgumentError{message: "argument error"} == ex
+  end
+
+  test "Try/rescue allows to catch and pattern match on exception
+  type/class" do
     try do
       throw(:reason)
     catch
       :throw, reason ->
         assert :reason == reason
     end
+  end
+
+  test "Try/rescue/after will return what is evaluated in the after
+  clase" do
+    ex = try do
+           raise "ala!"
+         rescue
+           e -> e
+         after
+           :from_after
+         end
+    assert ex == %RuntimeError{message: "ala!"}
+  end
+
+  test "Try/rescue/else/after will return what is evaluated in the after
+  clase" do
+    ex = try do
+           {:ok, :success}
+         rescue
+           e -> e
+         else
+           {:ok, :success} ->
+             :from_else
+         after
+           :from_after
+         end
+    assert ex == :from_else
   end
 
   test "Try/after can be used to soft-guarantee
