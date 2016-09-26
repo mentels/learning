@@ -12,14 +12,7 @@ defmodule JsonApi.AuthorView do
     # IO.puts inspect(params)
     %{name: author[:name],
       surname: author.surname,
-      books: render_many(books(), JsonApi.BookView, "book.json")}
+      books: render_many(author.books, JsonApi.BookView, "book.json")}
   end
 
-  defp books() do
-    titles = ["7 languages in 7 weeks",
-              "7 Habits of Highly Effective People",
-              "Heroic Leadership"]
-    for t <- titles, do: %{title: t, isbn: Enum.sum to_charlist(t)}
-  end
-      
 end
