@@ -1,7 +1,7 @@
 ## Maps
 
 * map() - stands for a map of any size
-* #{} - stands for a map of any size
+* #{} - stands for an empty map
 * #{foo => type()} - stands for a mapy containing at least the key foo with value of type()
 * #{ktype() => vtype()} - stands for a mapy containing at least the keys of type ktype() with values of vtype()
 * #{any() => any()} == #{ _ => _} - a mayp with any keys of any values

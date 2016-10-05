@@ -1,0 +1,3 @@
+*.plt
+**/*.log
+ct_log/
