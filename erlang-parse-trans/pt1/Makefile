@@ -3,6 +3,15 @@
 compile: rebar3
 	./rebar3 compile
 
+abstract_compile:
+	./rebar3 as abstract compile
+
+abstract_cat:
+	cat _build/abstract/lib/pt1/ebin/$(file).pp
+
+parsed_compile:
+	./rebar3 as parsed compile
+
 upgrade: rebar3
 	./rebar3 upgrade
 
@@ -18,11 +27,6 @@ dialyzer: rebar3
 shell: compile
 	erl -pa _build/default/lib/*/ebin \
 	-eval "application:ensure_all_started(pt1)"
-
-rebar3:
-	wget -c https://s3.amazonaws.com/rebar3/rebar3
-	chmod +x rebar3
-
 
 rel:
 	./rebar3 release

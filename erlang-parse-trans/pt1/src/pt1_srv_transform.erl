@@ -3,40 +3,54 @@
 -export([parse_transform/2]).
 
 parse_transform(Forms0, _Opts) ->
-    Forms1 = parse_trans:plain_transform(fun plain_transform_fn/1,
-                                         Forms0),
-    GprocCallMFAs = parse_trans:inspect(fun inspect_fn/4,
-                                        [],
-                                        Forms1,
-                                        []),
-    file:write_file("gpcalls", io_lib:format("~p~n", [GprocCallMFAs]),
-                    [write]),
+    Forms1 = transform_bangs_into_gproc_sends(Forms0),
+    record_gproc_sends_in_file(Forms1),
     %% TODO: add the gporc_calls fun
     Forms1.
             
 
+%% ! to gproc:send transform
 
-plain_transform_fn({op, LINE, '!', LArg, RArg}) ->
-    [NewLArg] = parse_trans:plain_transform(fun plain_transform_fn/1,
-                                            [LArg]),
+transform_bangs_into_gproc_sends(Forms) ->
+    parse_trans:plain_transform(fun bang_to_gproc_send_trans_fn/1, 
+                                Forms).
+
+bang_to_gproc_send_trans_fn({op, LINE, '!', LArg, RArg}) ->
+    [NewLArg] = parse_trans:plain_transform(
+                  fun bang_to_gproc_send_trans_fn/1,
+                  [LArg]),
     Func = {remote, LINE, {atom, LINE, gproc}, {atom, LINE, send}},
     {call, LINE, Func, [NewLArg, RArg]};
-plain_transform_fn(_Form) ->
+bang_to_gproc_send_trans_fn(_Form) ->
     continue.
 
-inspect_fn(_Type, {call, L,
+%% finding the gproc:send calls
+
+record_gproc_sends_in_file(Forms0) ->
+    CallMFAs = parse_trans:inspect(fun find_gproc_send_calls/4,
+                                   _Acc = [],
+                                   Forms0,
+                                   _Options = []),
+    ok = file:write_file("gpcalls", 
+                         io_lib:format("~s~n", [CallMFAs]), [write]).
+
+find_gproc_send_calls(_Type, {call, L,
                        {remote, L, {atom, L, gproc}, {atom, L, send}},
-                       _Args} = Form, Context, Acc) ->
+                       _Args} = _Form, Context, Acc) ->
     {true,
      begin
-         MFAs = [parse_trans:context(X, Context) || X <- [module,
+         MFA = [parse_trans:context(X, Context) || X <- [module,
                                                           function,
                                                           arity]],
-         [list_to_tuple(MFAs) | Acc]
+         [format_call(MFA, L) | Acc]
      end};
-inspect_fn(_, _, _, Acc) ->
+find_gproc_send_calls(_, _, _, Acc) ->
     {true, Acc}.
 
+format_call(MFA, Line) ->
+    io_lib:format("LINE: ~p CALL: ~p~n", [Line, list_to_tuple(MFA)]).
+
+%% other
 
 create_gproc_calls_fun_body(GprocCallMFAs) ->
     ErlAST = erl_syntax:abstract(GprocCallMFAs),
