@@ -1,0 +1,3 @@
+:name "tasks-edts"
+:node-sname "tasks-edts"
+:lib-dirs '("_build/default/lib" "_build/test/lib")
