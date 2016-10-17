@@ -14,6 +14,12 @@
 new() ->
     {fifo, [], []}.
 
+%% THIS WORKS AS WELL
+%% -spec push(fifo(A), A) -> fifo(A).
+%% push({fifo, In, Out}, X) -> 
+%%     {fifo, [X|In], Out}.
+
+
 -spec push(ft_fifo(), fun_task()) -> ft_fifo().
 push({fifo, In, Out}, Task) ->
     {fifo, [Task | In], Out}.
