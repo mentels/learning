@@ -13,6 +13,3 @@ erl_crash.dump
 .rebar
 logs
 _build
-rebar3
-**/.DS_Store
-/deps

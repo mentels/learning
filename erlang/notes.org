@@ -1,0 +1,34 @@
+* Compiler
+Learn about the erlc -P and erlc -E, and assembler output with erlc -S. 
+http://zxq9.com/archives/1337
+* Toolkit
+http://tutorials.pluralsight.com/erlang/10-essential-erlang-tools-for-erlang-developers
+* Testing
+https://github.com/zkessin/testing-erlang-book
+* Binaries
+** BitSyntax
+*** write X on 4 bytes
+<<4:(lists:sum([1,2]+1))/unit:8>>
+* Networking
+** How reading TCP/UDP packets works?
+Packet delivery happens roughly as follows:
+
+1. The network card gets the packet.
+2. The network card stores the packet in a kernel buffer.
+3. The Erlang VM reads packets out of the kernel buffer and into its own memory space. This opens up the kernel buffer for more UDP packets to arrive.
+4. The Erlang VM sends a message to a mailbox of a process with the data.
+
+Rules:
+
+- If the kernel buffer is full, new arrivals are dropped on the floor.
+- The kernel buffer is set separately, often with an operating system default.
+- The VM won't flood a process unless it has {active, true} set.
+
+{read_packets, K} controls what happens in 3. in the above. If set at 5, once the kernel tells the VM there are data available to read, the VM will read out 5 packets. It won't read more packets until a new packet arrives at the socket in which case it will read up to 5 packets more. Note that if the arrival rate is larger than the consumption rate then packets will eventually gets dropped on the floor. With UDP, your responsibility is to handle this situation.
+
+{active, N} controls how many packets can pre-delivered into the mailbox with no signs of progress from the process itself. It corresponds to a limiter at 4. in the above. You have situations when N < K, N > K and N == K to think about here. In those situations, you may end up with lost packets if the system goes over the capacity it is able to systematically handle.
+
+The kernel tracks stats for how many packets it has thrown away. I don't know if the Erlang VM does somewhere (it should, provided that it throws data on the floor).
+
+* Design Patterns
+http://www.erlangpatterns.org/patterns.html

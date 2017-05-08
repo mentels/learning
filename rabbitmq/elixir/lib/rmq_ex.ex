@@ -1,0 +1,2 @@
+defmodule RmqEx do
+end

@@ -1,0 +1,19 @@
+* Documentation
+** ehelper can be used to access Eralng documentation in the Elixir shell
+** mix allows to access documentation offline
+mix hex.docs fetch/open PACKAGE 2.0.0 --offline
+* Ecto
+** http://www.glydergun.com/
+
+* Monitoring
+** Prometeus
+- http://aldusleaf.org/monitoring-elixir-apps-in-2016-prometheus-and-grafana/
+- https://prometheus.io/
+* General guidelines
+https://github.com/inaka/guidelines/blob/master/ELIXIR.md
+* WEB
+** GraphQL
+https://github.com/usecanvas/searchql
+* Mocking
+** Asserting on calls
+assert called Module.my_fun(_)

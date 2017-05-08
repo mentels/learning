@@ -1,0 +1,3 @@
+:name "erlang-riak"
+:node-sname "erlang-riak_edts"
+:lib-dirs '("deps" "test")
