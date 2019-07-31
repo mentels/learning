@@ -47,11 +47,11 @@ xref_mod_regexp_and_exports_query_test() ->
     catch xref:stop(s),
     {ok, _Pid} = xref:start(s),
     {ok, ?SUT} = xref:add_module(s, ?SUT),
-    ?assertMatch({ok, [{?SUT,exp,1}]}, 
+    ?assertMatch({ok, [{?SUT,exp,1}]},
                  xref:q(s, '".*_sut" : Mod * X')).
 
 xref_query_matching_predefined_analysis_test_SKIP() ->
-    {timeout, 60, 
+    {timeout, 60,
      fun() ->
              catch xref:stop(s),
              {ok, _Pid} = xref:start(s),
@@ -67,25 +67,3 @@ xref_runner_locals_not_used_test() ->
 xref_runner_reads_config_from_file_test() ->
     true = filelib:is_file("xref.config"),
     ?assertMatch([#{source := {?SUT,unexp,1}}], xref_runner:check()).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

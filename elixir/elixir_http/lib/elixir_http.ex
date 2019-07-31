@@ -1,2 +1,0 @@
-defmodule ElixirHttp do
-end
